@@ -8,5 +8,6 @@ root.render(
     <button>Hola mundo</button>
     <button>Hola mundo</button>
     <button>Hola mundo</button>
+    <button>Hola mundo</button>
   </React.Fragment>,
 )
