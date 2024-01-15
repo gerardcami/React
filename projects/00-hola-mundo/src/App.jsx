@@ -1,23 +1,19 @@
 import './App.css'
 import { TwitterFollowCard } from './TwitterFollowCard.jsx'
 // <></> => Same as 'React.Fragment' but more clean and the import React is not needed
+// const cxmidev => The component can receive an object as props
 export function App() {
-    const formatUserName = (userName) => `@${userName}`
+    const cxmidev = {
+        userName: 'cxmi_ns',
+    }
     return (
         <section className='App'>
-            <TwitterFollowCard 
-            formatUserName={formatUserName} 
-            isFollowing 
-            userName="soymajacreo" 
-            name="Ylenia Martínez" />
-            <TwitterFollowCard 
-            formatUserName={formatUserName} 
-            isFollowing userName="cxmi_ns" 
-            name="Gerard Cami" />
-            <TwitterFollowCard 
-            formatUserName={formatUserName} 
-            isFollowing userName="midudev" 
-            name="Miguel Ángel Durán" />
+            <TwitterFollowCard userName="soymajacreo" >
+                Ylenia Martínez
+            </TwitterFollowCard>
+            <TwitterFollowCard {...cxmidev} >
+                Gerard Cami
+            </TwitterFollowCard>
         </section>
     )
 }
