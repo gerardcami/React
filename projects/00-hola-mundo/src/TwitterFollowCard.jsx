@@ -1,6 +1,6 @@
-import { useState } from 'react';
-export function TwitterFollowCard({ children, userName = 'unknown' }) {
-  const [isFollowing, setIsFollowing] = useState(false)
+import { useState } from 'react'; // Hook useState of React library for state management and functional components
+export function TwitterFollowCard({ children, userName = 'unknown', initialIsFollowing }) {
+  const [isFollowing, setIsFollowing] = useState(initialIsFollowing)
 
   const text = isFollowing ? 'Siguiendo' : 'Seguir'
   const buttonClassName = isFollowing ? 'tw-followCard-button is-following' : 'tw-followCard-button'
@@ -23,7 +23,8 @@ export function TwitterFollowCard({ children, userName = 'unknown' }) {
       </header>
       <aside>
         <button className={buttonClassName} onClick={handleClick}>
-          {text}
+          <span className='tw-followCard-text'>{text}</span>
+          <span className='tw-followCard-stopFollow'>Dejar de seguir</span>
         </button>
       </aside>
     </article>
