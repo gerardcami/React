@@ -1,19 +1,23 @@
 import './App.css'
+import { TwitterFollowCard } from './TwitterFollowCard.jsx'
+// <></> => Same as 'React.Fragment' but more clean and the import React is not needed
 export function App() {
+    const formatUserName = (userName) => `@${userName}`
     return (
-        <article>
-            <header>
-                <img alt="El avatar de midudev" src="https://unavatar.io/midudev" />
-                <div>
-                    <strong>Miguel Ángel Durán</strong>
-                    <span>@midudev</span>
-                </div>
-            </header>
-            <aside>
-                <button>
-                    Seguir
-                </button>
-            </aside>
-        </article>
+        <section className='App'>
+            <TwitterFollowCard 
+            formatUserName={formatUserName} 
+            isFollowing 
+            userName="soymajacreo" 
+            name="Ylenia Martínez" />
+            <TwitterFollowCard 
+            formatUserName={formatUserName} 
+            isFollowing userName="cxmi_ns" 
+            name="Gerard Cami" />
+            <TwitterFollowCard 
+            formatUserName={formatUserName} 
+            isFollowing userName="midudev" 
+            name="Miguel Ángel Durán" />
+        </section>
     )
 }
