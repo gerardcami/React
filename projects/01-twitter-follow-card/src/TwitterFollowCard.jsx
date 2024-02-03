@@ -1,5 +1,5 @@
-import { useState } from 'react'; // Hook useState of React library for state management and functional components
-export function TwitterFollowCard({ children, userName = 'unknown', initialIsFollowing }) {
+import { useState } from 'react' // Hook useState of React library for state management and functional components
+export function TwitterFollowCard ({ children, userName = 'unknown', initialIsFollowing }) {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing)
 
   const text = isFollowing ? 'Siguiendo' : 'Seguir'
@@ -13,12 +13,15 @@ export function TwitterFollowCard({ children, userName = 'unknown', initialIsFol
       <header className='tw-followCard-header'>
         <img
           className='tw-followCard-avatar'
-          alt="El avatar de midudev"
-          src={`https://unavatar.io/${userName}`} />
+          alt='El avatar de midudev'
+          src={`https://unavatar.io/${userName}`}
+        />
         <div className='tw-followCard-info'>
           <strong>{children}</strong>
           <span
-            className='tw-followCard-infoUserName'>@{userName}</span>
+            className='tw-followCard-infoUserName'
+          >@{userName}
+          </span>
         </div>
       </header>
       <aside>

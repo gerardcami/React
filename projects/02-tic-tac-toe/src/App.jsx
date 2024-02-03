@@ -1,14 +1,13 @@
-import { useState } from "react"
-import confetti from "canvas-confetti"
+import { useState } from 'react'
+import confetti from 'canvas-confetti'
 
-import { Square } from "./components/Square.jsx"
-import { TURNS } from "./constants.js"
-import { checkWinnerFrom, checkEndGame } from "./logic/board.js"
-import { WinnerModal } from "./components/WinnerModal.jsx"
-import { saveGameToStorage } from "./logic/storage/index.js"
-import { resetGameStorage } from "./logic/storage/index.js"
+import { Square } from './components/Square.jsx'
+import { TURNS } from './constants.js'
+import { checkWinnerFrom, checkEndGame } from './logic/board.js'
+import { WinnerModal } from './components/WinnerModal.jsx'
+import { saveGameToStorage, resetGameStorage } from './logic/storage/index.js'
 
-function App() {
+function App () {
   const [board, setBoard] = useState(() => {
     const boardFromStorage = window.localStorage.getItem('board')
     if (boardFromStorage) return JSON.parse(boardFromStorage)
@@ -27,7 +26,7 @@ function App() {
     setTurn(TURNS.X)
     setWInner(null)
 
-    resetGameStorage();
+    resetGameStorage()
   }
 
   const updateBoard = (index) => {
@@ -41,9 +40,9 @@ function App() {
 
     // cambiar el turno
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X
-    setTurn(newTurn);
+    setTurn(newTurn)
 
-    saveGameToStorage({board: newBoard, turn: newTurn})
+    saveGameToStorage({ board: newBoard, turn: newTurn })
     const newWinner = checkWinnerFrom(newBoard)
     if (newWinner) {
       setWInner(() => {
@@ -56,7 +55,7 @@ function App() {
   }
 
   return (
-    <main className="board">
+    <main className='board'>
       <h1>Tic tac toe</h1>
       <button onClick={resetGame}>Reset</button>
       <section className='game'>
@@ -75,7 +74,7 @@ function App() {
         }
       </section>
 
-      <section className="turn">
+      <section className='turn'>
         <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
         <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
       </section>

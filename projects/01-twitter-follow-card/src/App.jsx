@@ -3,7 +3,7 @@ import { TwitterFollowCard } from './TwitterFollowCard.jsx'
 // <></> => Same as 'React.Fragment' but more clean and the import React is not needed
 // const cxmidev => The component can receive an object as props
 // It is not recommended to write comments inside a return
-export function App() {
+export function App () {
   const users = [
     {
       userName: 'soymajacreo',

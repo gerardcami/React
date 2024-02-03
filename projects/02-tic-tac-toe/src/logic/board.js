@@ -1,6 +1,5 @@
-import { WINNER_COMBOS } from "../constants.js"
+import { WINNER_COMBOS } from '../constants.js'
 export const checkWinnerFrom = (boardToCheck) => {
-
   // revisamos todas las combinaciones ganadoras para X y O
   for (const combo of WINNER_COMBOS) {
     const [a, b, c] = combo
