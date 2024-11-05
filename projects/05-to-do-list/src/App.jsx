@@ -13,8 +13,6 @@ function App() {
   });
 
   const handleTaskInput = (event) => {
-    event.preventDefault();
-
     const data = new FormData(event.target);
 
     const newTaskList = [
@@ -29,6 +27,8 @@ function App() {
     setTasks(newTaskList);
 
     localStorage.setItem("tasks", JSON.stringify(newTaskList));
+
+    event.preventDefault();
   };
 
   const handleRemoveTask = (item) => {
@@ -43,17 +43,32 @@ function App() {
     <>
       <h1>To-do List</h1>
 
-      <form className="flex flex-col gap-4" onSubmit={handleTaskInput}>
-        <label htmlFor="newTask">New Task: </label>
-        <input className="rounded" name="taskTitle" id="newTask" type="text" />
+      <TaskForm onTaskSubmit={handleTaskInput} />
 
-        <button type="submit">Add</button>
-      </form>
+      <hr />
 
       <List list={taskList} onRemoveTask={handleRemoveTask} />
     </>
   );
 }
+
+const TaskForm = ({ onTaskSubmit }) => (
+  <form className="flex flex-col gap-4" onSubmit={onTaskSubmit}>
+    <InputWithLabel id="addTask" name="taskTitle">
+      New task:{" "}
+    </InputWithLabel>
+    <button type="submit">Add</button>
+  </form>
+);
+
+const InputWithLabel = ({ id, name, type = "text", children }) => {
+  return (
+    <div>
+      <label htmlFor={id}>{children}</label>
+      <input className="rounded" id={id} name={name} type={type} />
+    </div>
+  );
+};
 
 const List = ({ list, onRemoveTask }) => (
   <ul>
