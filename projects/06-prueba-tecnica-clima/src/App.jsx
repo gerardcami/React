@@ -47,27 +47,25 @@ function App() {
 
   // gestionar todas las variables de estado que
   // estén relacionadas entre si.
-  const [url, setUrl] = useState("");
   const [weatherData, dispatchWeatherData] = useReducer(weatherDataReducer, {
     data: null,
     isloading: false,
     isError: false,
   });
 
-  const [geoUrl, setGeoUrl] = useState(
-    `http://api.openweathermap.org/geo/1.0/direct?q=${searchTerm}&limit=1&appid=${API_KEY}`
-  );
-
   const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSearchSubmit = (event) => {
-    fetchWeatherData();
-    event.preventDefault();
-  };
+  const handleSearchSubmit = useCallback(
+    (event) => {
+      fetchWeatherData();
+      event.preventDefault();
+    },
+    [fetchWeatherData]
+  );
 
-  const fetchWeatherData = async () => {
+  const fetchWeatherData = useCallback(async () => {
     dispatchWeatherData({ type: "DATA_FETCH_INIT" });
     try {
       // Obtener geolocalización de la ciudad
@@ -88,11 +86,11 @@ function App() {
     } catch {
       dispatchWeatherData({ type: "DATA_FETCH_FAILURE" });
     }
-  };
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchWeatherData();
-  }, []);
+  }, [fetchWeatherData]);
 
   return (
     <>
