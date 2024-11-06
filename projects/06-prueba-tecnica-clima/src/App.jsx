@@ -53,18 +53,6 @@ function App() {
     isError: false,
   });
 
-  const handleSearchInput = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleSearchSubmit = useCallback(
-    (event) => {
-      fetchWeatherData();
-      event.preventDefault();
-    },
-    [fetchWeatherData]
-  );
-
   const fetchWeatherData = useCallback(async () => {
     dispatchWeatherData({ type: "DATA_FETCH_INIT" });
     try {
@@ -91,6 +79,18 @@ function App() {
   useEffect(() => {
     fetchWeatherData();
   }, [fetchWeatherData]);
+
+  const handleSearchInput = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = useCallback(
+    (event) => {
+      fetchWeatherData();
+      event.preventDefault();
+    },
+    [fetchWeatherData]
+  );
 
   return (
     <>
