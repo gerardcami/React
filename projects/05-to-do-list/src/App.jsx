@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -11,6 +11,10 @@ function App() {
 
     return JSON.parse(storedTasks);
   });
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+  }, [taskList]);
 
   const handleTaskInput = (event) => {
     const data = new FormData(event.target);
@@ -25,9 +29,6 @@ function App() {
     ];
 
     setTasks(newTaskList);
-
-    localStorage.setItem("tasks", JSON.stringify(newTaskList));
-
     event.preventDefault();
   };
 
@@ -39,6 +40,17 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(newTaskList));
   };
 
+  const handleStatusChange = (item, newStatus) => {
+    console.log(item);
+    const updatedItem = { ...item, currentStatus: newStatus };
+
+    const newTaskList = taskList.map((task) =>
+      task.objectID === item.objectID ? updatedItem : task
+    );
+
+    setTasks(newTaskList);
+  };
+
   return (
     <>
       <h1>To-do List</h1>
@@ -47,7 +59,11 @@ function App() {
 
       <hr />
 
-      <List list={taskList} onRemoveTask={handleRemoveTask} />
+      <List
+        list={taskList}
+        onRemoveTask={handleRemoveTask}
+        onSelectorChange={handleStatusChange}
+      />
     </>
   );
 }
@@ -65,22 +81,58 @@ const InputWithLabel = ({ id, name, type = "text", children }) => {
   return (
     <div>
       <label htmlFor={id}>{children}</label>
-      <input className="rounded" id={id} name={name} type={type} />
+      <input id={id} name={name} type={type} />
     </div>
   );
 };
 
-const List = ({ list, onRemoveTask }) => (
-  <ul>
-    {list?.map((item) => (
-      <li key={item.objectID}>
-        <div>
-          {item.title} {item.currentStatus}
-          <button onClick={() => onRemoveTask(item)}>Remove</button>
-        </div>
-      </li>
-    ))}
-  </ul>
+const List = ({ list, onRemoveTask, onSelectorChange }) => (
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {list?.map((item) => (
+        <Item
+          key={item.objectID}
+          item={item}
+          onRemoveTask={onRemoveTask}
+          onSelectorChange={onSelectorChange}
+        />
+      ))}
+    </tbody>
+  </table>
 );
+
+const Item = ({ item, onRemoveTask, onSelectorChange }) => (
+  <tr>
+    <td>{item.title}</td>
+    <td>
+      <StatusSelector item={item} onSelectorChange={onSelectorChange} />
+    </td>
+    <td>
+      <button type="button" onClick={() => onRemoveTask(item)}>
+        Remove
+      </button>
+    </td>
+  </tr>
+);
+
+const StatusSelector = ({ item, onSelectorChange }) => {
+  return (
+    <select
+      value={item.currentStatus}
+      onChange={(e) => onSelectorChange(item, e.target.value)}
+    >
+      <option value="PENDANT">Pendant</option>
+      <option value="IN_PROGRESS">In progress</option>
+      <option value="DONE">Done</option>
+    </select>
+  );
+};
 
 export default App;
