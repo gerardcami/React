@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
+
+const STATUSES = {
+  PENDANT: "PENDANT",
+  IN_PROGRESS: "IN_PROGRESS",
+  DONE: "DONE",
+};
 
 function App() {
   const [taskList, setTasks] = useState(() => {
@@ -16,7 +23,7 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(taskList));
   }, [taskList]);
 
-  const handleTaskInput = (event) => {
+  const handleTaskInput = (event, resetTaskTitle) => {
     const data = new FormData(event.target);
 
     const newTaskList = [
@@ -29,6 +36,7 @@ function App() {
     ];
 
     setTasks(newTaskList);
+    resetTaskTitle();
     event.preventDefault();
   };
 
@@ -37,7 +45,6 @@ function App() {
       (task) => item.objectID !== task.objectID
     );
     setTasks(newTaskList);
-    localStorage.setItem("tasks", JSON.stringify(newTaskList));
   };
 
   const handleTitleChange = (item, newTitle) => {
@@ -82,11 +89,16 @@ function App() {
 const TaskForm = ({ onTaskSubmit }) => {
   const [taskTitle, setTaskTitle] = useState("");
 
-  const handleInputChange = (event) => {
+  const handleInputChange = useCallback((event) => {
     setTaskTitle(event.target.value);
-  };
+  }, []);
+
   return (
-    <form className="flex gap-4" onSubmit={onTaskSubmit}>
+    <form
+      className="flex gap-4"
+      onSubmit={onTaskSubmit}
+      resetTaskTitle={() => setTaskTitle("")}
+    >
       <InputWithLabel
         id="addTask"
         name="taskTitle"
@@ -111,8 +123,14 @@ const InputWithLabel = ({ id, name, type = "text", children, onChange }) => {
 };
 
 const Table = ({ list, onRemoveTask, onTitleChange, onSelectorChange }) => {
-  const getFilteredTasks = (filter) => {
-    return list.filter((task) => task.currentStatus === filter);
+  const STATUS_LIST = [STATUSES.PENDANT, STATUSES.IN_PROGRESS, STATUSES.DONE];
+
+  const getFilteredTasks = (status) => {
+    return list.filter((task) => task.currentStatus === status);
+  };
+
+  const capitalizeFirstLetter = (text) => {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   };
 
   return (
@@ -125,33 +143,23 @@ const Table = ({ list, onRemoveTask, onTitleChange, onSelectorChange }) => {
         </tr>
       </thead>
       <tbody>
-        {getFilteredTasks("PENDANT").length > 0 && (
-          <TaskSection
-            title="Pendant"
-            tasks={getFilteredTasks("PENDANT")}
-            onTitleChange={onTitleChange}
-            onSelectorChange={onSelectorChange}
-            onRemoveTask={onRemoveTask}
-          />
-        )}
-        {getFilteredTasks("IN_PROGRESS").length > 0 && (
-          <TaskSection
-            title="In progress"
-            tasks={getFilteredTasks("IN_PROGRESS")}
-            onTitleChange={onTitleChange}
-            onSelectorChange={onSelectorChange}
-            onRemoveTask={onRemoveTask}
-          />
-        )}
-        {getFilteredTasks("DONE").length > 0 && (
-          <TaskSection
-            title="Done"
-            tasks={getFilteredTasks("DONE")}
-            onTitleChange={onTitleChange}
-            onSelectorChange={onSelectorChange}
-            onRemoveTask={onRemoveTask}
-          />
-        )}
+        {STATUS_LIST.map((status) => {
+          const filteredTasks = getFilteredTasks(status);
+
+          return (
+            filteredTasks.length > 0 && (
+              <TaskSection
+                title={capitalizeFirstLetter(
+                  status.replace("_", " ").toLowerCase()
+                )}
+                tasks={getFilteredTasks(status)}
+                onTitleChange={onTitleChange}
+                onSelectorChange={onSelectorChange}
+                onRemoveTask={onRemoveTask}
+              />
+            )
+          );
+        })}
       </tbody>
     </table>
   );
@@ -181,24 +189,26 @@ const TaskSection = ({
   </>
 );
 
-const TaskRow = ({ item, onTitleChange, onSelectorChange, onRemoveTask }) => (
-  <tr>
-    <td>
-      <input
-        type="text"
-        value={item.title}
-        onChange={(event) => onTitleChange(item, event.target.value)}
-      />
-    </td>
-    <td>
-      <StatusSelector item={item} onSelectorChange={onSelectorChange} />
-    </td>
-    <td>
-      <button type="button" onClick={() => onRemoveTask(item)}>
-        Remove
-      </button>
-    </td>
-  </tr>
+const TaskRow = React.memo(
+  ({ item, onTitleChange, onSelectorChange, onRemoveTask }) => (
+    <tr>
+      <td>
+        <input
+          type="text"
+          value={item.title}
+          onChange={(event) => onTitleChange(item, event.target.value)}
+        />
+      </td>
+      <td>
+        <StatusSelector item={item} onSelectorChange={onSelectorChange} />
+      </td>
+      <td>
+        <button type="button" onClick={() => onRemoveTask(item)}>
+          Remove
+        </button>
+      </td>
+    </tr>
+  )
 );
 
 const StatusSelector = ({ item, onSelectorChange }) => {
@@ -207,9 +217,9 @@ const StatusSelector = ({ item, onSelectorChange }) => {
       value={item.currentStatus}
       onChange={(event) => onSelectorChange(item, event.target.value)}
     >
-      <option value="PENDANT">Pendant</option>
-      <option value="IN_PROGRESS">In progress</option>
-      <option value="DONE">Done</option>
+      <option value={STATUSES.PENDANT}>Pendant</option>
+      <option value={STATUSES.IN_PROGRESS}>In progress</option>
+      <option value={STATUSES.DONE}>Done</option>
     </select>
   );
 };
