@@ -1,0 +1,67 @@
+{
+  "products": [
+    {
+      "name": "iPhone 14 Pro Max",
+      "image": "https://images.unsplash.com/photo-1697898706719-bce6e007c817?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 5000,
+      "stock": 5,
+      "type": "technology"
+    },
+    {
+      "name": "Timon Racing Carrera",
+      "image": "https://plus.unsplash.com/premium_photo-1694394359962-6594125da68c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 8000,
+      "stock": 2,
+      "type": "technology"
+    },
+    {
+      "name": "Control joystick inalámbrico",
+      "image": "https://images.unsplash.com/photo-1655029164758-51e484f5576b?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 1000,
+      "stock": 1,
+      "type": "technology"
+    },
+    {
+      "name": "Bicicleta Roadmaster",
+      "image": "https://plus.unsplash.com/premium_photo-1677564626330-d68fabb71930?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 1800,
+      "stock": 1,
+      "type": "sport"
+    },
+    {
+      "name": "Bicicleta Todo Terreno",
+      "image": "https://images.unsplash.com/photo-1444491741275-3747c53c99b4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 200,
+      "stock": 0,
+      "type": "sport"
+    },
+    {
+      "name": "Balon De Futbol",
+      "image": "https://images.unsplash.com/photo-1597539358849-aeff63450aef?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 120,
+      "stock": 6,
+      "type": "sport"
+    },
+    {
+      "name": "Ducha Electrica",
+      "image": "https://images.unsplash.com/photo-1558211583-ecfebb03748b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 120,
+      "stock": 8,
+      "type": "building"
+    },
+    {
+      "name": "Gabinete De Baño",
+      "image": "https://images.unsplash.com/photo-1595515106864-077d30192c56?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 650,
+      "stock": 10,
+      "type": "building"
+    },
+    {
+      "name": "Mueble Sanitario",
+      "image": "https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "unit_price": 900,
+      "stock": 2,
+      "type": "building"
+    }
+  ]
+}
