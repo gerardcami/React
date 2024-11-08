@@ -1,78 +1,57 @@
 import data from "./data/data.json";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
+// Función para añadir un ID único a cada producto
 const addItemId = (list) => {
-  const newList = list.map((item) => ({
+  return list.map((item) => ({
     ...item,
     objectID: crypto.randomUUID(),
   }));
-
-  return newList;
 };
 
-const products = addItemId(data.products);
-
 function App() {
-  const [quantities, setQuantities] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [quantities, setQuantities] = useState({});
   const [cartProducts, setCartProducts] = useState([]);
-  const [isNotAvailable, setIsNotAvailable] = useState(() => {
-    const availability = {};
-    products.forEach((product) => {
-      const stock = product.stock || 0;
-      const cartAmount =
-        cartProducts.find((item) => item.objectID === product.objectID)
-          ?.amount || 0;
-      availability[product.objectID] = cartAmount >= stock;
-    });
-    return availability;
-  });
+  const [isNotAvailable, setIsNotAvailable] = useState({});
 
-  const handleQuantityChange = (itemID, newQuantity) => {
-    const productStock =
-      products.find((product) => product.objectID === itemID)?.stock || 0;
-    const cartAmount =
-      cartProducts.find((item) => item.objectID === itemID)?.amount || 0;
-    const isAvailable = newQuantity + cartAmount <= productStock;
+  // Cargar los productos con IDs únicos
+  useEffect(() => {
+    const updatedProducts = addItemId(data.products);
+    setProducts(updatedProducts);
+  }, []);
 
-    setIsNotAvailable((prev) => ({
-      ...prev,
-      [itemID]: !isAvailable,
-    }));
-
-    const newList = quantities.find((item) => item.objectID === itemID)
-      ? quantities.map((item) =>
-          item.objectID === itemID
-            ? { objectID: itemID, amount: newQuantity }
-            : item
-        )
-      : [
-          ...quantities,
-          {
-            objectID: itemID,
-            amount: newQuantity,
-          },
-        ];
-
-    setQuantities(newList);
-  };
-
-  const handleAddCart = (product, event) => {
-    event.preventDefault();
-    const amount =
-      quantities.find((item) => item.objectID === product.objectID)?.amount ||
-      1;
-
+  // Función para verificar el stock disponible
+  const checkStock = (product, amount) => {
     const cartAmount =
       cartProducts.find((item) => item.objectID === product.objectID)?.amount ||
       0;
+    return amount + cartAmount <= product.stock;
+  };
 
-    if (amount + cartAmount > product.stock) {
+  // Actualizar las cantidades de productos
+  const handleQuantityChange = (itemID, newQuantity) => {
+    const product = products.find((prod) => prod.objectID === itemID);
+    if (!product || !checkStock(product, newQuantity)) return;
+
+    setQuantities((prev) => ({
+      ...prev,
+      [itemID]: newQuantity,
+    }));
+  };
+
+  // Añadir un producto al carrito
+  const handleAddCart = (product, event) => {
+    event.preventDefault();
+    const amount = quantities[product.objectID] || 1;
+
+    if (!checkStock(product, amount)) {
       setIsNotAvailable((prev) => ({
         ...prev,
         [product.objectID]: true,
       }));
-      return; // Detener la ejecución si el stock es insuficiente
+      return;
     }
 
     const newCartList = cartProducts.find(
@@ -97,15 +76,32 @@ function App() {
         ];
 
     setCartProducts(newCartList);
+    setIsNotAvailable((prev) => ({
+      ...prev,
+      [product.objectID]: false,
+    }));
   };
+
+  // Verificar disponibilidad de stock
+  useEffect(() => {
+    const availability = {};
+    products.forEach((product) => {
+      const stock = product.stock || 0;
+      const cartAmount =
+        cartProducts.find((item) => item.objectID === product.objectID)
+          ?.amount || 0;
+      availability[product.objectID] = cartAmount >= stock;
+    });
+    setIsNotAvailable(availability);
+  }, [cartProducts, products]);
 
   return (
     <>
       <h1>Alternova Shop</h1>
       <div>
         <section>
-          {products.map((product, index) => (
-            <article className="productCard" key={index}>
+          {products.map((product) => (
+            <article className="productCard" key={product.objectID}>
               <img
                 className="productCover"
                 src={product.image}
@@ -117,11 +113,7 @@ function App() {
                   <label htmlFor="quantity">Quantity: </label>
                   <input
                     type="number"
-                    value={
-                      quantities.find(
-                        (item) => item.objectID === product.objectID
-                      )?.amount || 1
-                    }
+                    value={quantities[product.objectID] || 1}
                     id="quantity"
                     min={1}
                     onChange={(event) =>
@@ -133,7 +125,7 @@ function App() {
                   />
                   <button
                     type="submit"
-                    disabled={isNotAvailable[product.objectID] || false}
+                    disabled={isNotAvailable[product.objectID]}
                   >
                     Add to cart
                   </button>
@@ -146,8 +138,8 @@ function App() {
         <aside>
           <h2>Cart</h2>
           <div>
-            {cartProducts.map((item, index) => (
-              <div key={index}>
+            {cartProducts.map((item) => (
+              <div key={item.objectID}>
                 <p>{item.name}</p>
                 <p>{item.amount}</p>
               </div>
