@@ -15,13 +15,31 @@ const products = addItemId(data.products);
 
 function App() {
   const [quantities, setQuantities] = useState([]);
-  const [cartProducts, setCartProducts] = useState(() => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
+  const [cartProducts, setCartProducts] = useState([]);
+  const [isNotAvailable, setIsNotAvailable] = useState(() => {
+    const availability = {};
+    products.forEach((product) => {
+      const stock = product.stock || 0;
+      const cartAmount =
+        cartProducts.find((item) => item.objectID === product.objectID)
+          ?.amount || 0;
+      availability[product.objectID] = cartAmount >= stock;
+    });
+    return availability;
   });
-  const [isNotAvailable, setIsNotAvailable] = useState(false);
 
   const handleQuantityChange = (itemID, newQuantity) => {
-    console.log(newQuantity);
+    const productStock =
+      products.find((product) => product.objectID === itemID)?.stock || 0;
+    const cartAmount =
+      cartProducts.find((item) => item.objectID === itemID)?.amount || 0;
+    const isAvailable = newQuantity + cartAmount <= productStock;
+
+    setIsNotAvailable((prev) => ({
+      ...prev,
+      [itemID]: !isAvailable,
+    }));
+
     const newList = quantities.find((item) => item.objectID === itemID)
       ? quantities.map((item) =>
           item.objectID === itemID
@@ -40,9 +58,22 @@ function App() {
   };
 
   const handleAddCart = (product, event) => {
+    event.preventDefault();
     const amount =
       quantities.find((item) => item.objectID === product.objectID)?.amount ||
       1;
+
+    const cartAmount =
+      cartProducts.find((item) => item.objectID === product.objectID)?.amount ||
+      0;
+
+    if (amount + cartAmount > product.stock) {
+      setIsNotAvailable((prev) => ({
+        ...prev,
+        [product.objectID]: true,
+      }));
+      return; // Detener la ejecución si el stock es insuficiente
+    }
 
     const newCartList = cartProducts.find(
       (item) => item.objectID === product.objectID
@@ -66,12 +97,7 @@ function App() {
         ];
 
     setCartProducts(newCartList);
-    event.preventDefault();
   };
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartProducts));
-  }, [cartProducts]);
 
   return (
     <>
@@ -105,10 +131,13 @@ function App() {
                       )
                     }
                   />
-                  <button type="submit" disabled={isNotAvailable}>
+                  <button
+                    type="submit"
+                    disabled={isNotAvailable[product.objectID] || false}
+                  >
                     Add to cart
                   </button>
-                  {isNotAvailable && <p>Not enough stock</p>}
+                  {isNotAvailable[product.objectID] && <p>Not enough stock</p>}
                 </form>
               </div>
             </article>
