@@ -21,6 +21,7 @@ function App() {
   const [isNotAvailable, setIsNotAvailable] = useState(false);
 
   const handleQuantityChange = (itemID, newQuantity) => {
+    console.log(newQuantity);
     const newList = quantities.find((item) => item.objectID === itemID)
       ? quantities.map((item) =>
           item.objectID === itemID
@@ -38,17 +39,21 @@ function App() {
     setQuantities(newList);
   };
 
-  const handleAddCart = (product) => {
-    const amount = quantities.find(
-      (item) => item.objectID === product.objectID
-    )?.amount;
+  const handleAddCart = (product, event) => {
+    const amount =
+      quantities.find((item) => item.objectID === product.objectID)?.amount ||
+      1;
 
     const newCartList = cartProducts.find(
       (item) => item.objectID === product.objectID
     )
       ? cartProducts.map((item) =>
           item.objectID === product.objectID
-            ? { objectID: product.objectID, amount: amount }
+            ? {
+                objectID: product.objectID,
+                amount: item.amount + amount,
+                name: product.name,
+              }
             : item
         )
       : [
@@ -56,10 +61,12 @@ function App() {
           {
             objectID: product.objectID,
             amount: amount,
+            name: product.name,
           },
         ];
 
     setCartProducts(newCartList);
+    event.preventDefault();
   };
 
   useEffect(() => {
@@ -80,7 +87,7 @@ function App() {
               />
               <div>
                 <h2>{product.name}</h2>
-                <form onSubmit={() => handleAddCart(product)}>
+                <form onSubmit={(event) => handleAddCart(product, event)}>
                   <label htmlFor="quantity">Quantity: </label>
                   <input
                     type="number"
@@ -89,14 +96,19 @@ function App() {
                         (item) => item.objectID === product.objectID
                       )?.amount || 1
                     }
-                    name=""
                     id="quantity"
                     min={1}
                     onChange={(event) =>
-                      handleQuantityChange(product.objectID, event.target.value)
+                      handleQuantityChange(
+                        product.objectID,
+                        parseInt(event.target.value)
+                      )
                     }
                   />
-                  <button type="submit">Add to cart</button>
+                  <button type="submit" disabled={isNotAvailable}>
+                    Add to cart
+                  </button>
+                  {isNotAvailable && <p>Not enough stock</p>}
                 </form>
               </div>
             </article>
@@ -106,7 +118,10 @@ function App() {
           <h2>Cart</h2>
           <div>
             {cartProducts.map((item, index) => (
-              <div key={index}>{item.objectID}</div>
+              <div key={index}>
+                <p>{item.name}</p>
+                <p>{item.amount}</p>
+              </div>
             ))}
           </div>
         </aside>

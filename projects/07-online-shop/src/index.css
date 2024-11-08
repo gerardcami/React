@@ -65,6 +65,10 @@ section {
 }
 
 aside {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  height: fit-content;
   width: 25%;
 }
 
